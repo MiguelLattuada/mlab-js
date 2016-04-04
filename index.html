@@ -1,0 +1,57 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+    </head>
+    <body>
+        <script src="mlab-js.js"></script>
+        <script>
+            var client = new mLab_client({
+                api_key: 'qLFVVTSiPpTiZdMgNeUh9VWyHR_wMv9t'
+            });            
+            
+            // client.list_databases().then(function(result) {
+            //     console.log(result);
+            // });
+            
+            client.use({
+                db: 'evs',
+                collection: 'testcol'
+            });
+            
+            // client.list_collections().then(function(result) {
+            //     console.log(result);
+            // }, function(error) {
+            //     console.log(error);
+            // });
+            
+            client.list_documents().then(function(result) {
+                console.log(result);
+            }, function(error) {
+                console.log(error);
+            });
+            
+            // client.query_documents('evs', 'testcol', {
+            //     q: {
+            //         type: 'Collection create'
+            //     }
+            // }).then(function(res) {
+            //     console.debug(res)
+            // });
+            
+            // client.create_collection('evs', 'testing').then(function(r){
+            //     console.log(r);
+            // }) 
+            
+            // var prsn = {
+            //     name: 'Mike',
+            //     age: 22,
+            //     isDaddy: true
+            // };
+            
+            // client.insert_document('evs', 'testing', prsn).then(function(r){
+            //     console.log(r);
+            // });
+        </script>
+    </body>
+</html>
