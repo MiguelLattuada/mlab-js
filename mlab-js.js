@@ -53,8 +53,9 @@ var mLab_client = function(mlab) {
             var xhr = new XMLHttpRequest();
             
             if (options.params) url = url.concat(request.formatParameters(options.params));
+            if (options.performPut) type = 'PUT';
             
-            xhr.open('POST', url, true);
+            xhr.open(type || 'POST', url, true);
             xhr.setRequestHeader('Content-Type', 'application/json');
             xhr.send(JSON.stringify(options.body));
             
@@ -173,7 +174,7 @@ var mLab_client = function(mlab) {
         );
     };
     
-    // POST: update document/s that match query
+    // PUT: update document/s that match query
     mlab.update_document = function(query_options, doc_body, db_id, collection_id) {
         query_options.apiKey = mlab.api_key;
         
@@ -185,7 +186,8 @@ var mLab_client = function(mlab) {
                 params: query_options,
                 body: {
                     $set: doc_body
-                }
+                },
+                performPut: true
             }
         )  
     };
