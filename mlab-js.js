@@ -195,6 +195,7 @@ var mLab_client = function(mlab) {
     // PUT: replace document/s that match query
     mlab.replace_document = function(query_options, doc_body, db_id, collection) {
         query_options.apiKey = mlab.api_key;
+        if(!(doc_body instanceof Array)) return; //Check this!
         
         return request.post(
             mlab.base_url.concat(mlab.documents_path, '?')
