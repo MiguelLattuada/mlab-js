@@ -189,7 +189,23 @@ var mLab_client = function(mlab) {
                 },
                 performPut: true
             }
-        )  
+        );  
+    };
+    
+    // PUT: replace document/s that match query
+    mlab.replace_document = function(query_options, doc_body, db_id, collection) {
+        query_options.apiKey = mlab.api_key;
+        
+        return request.post(
+            mlab.base_url.concat(mlab.documents_path, '?')
+                .replace(/{database-id}/gi, db_id || mlab.db)
+                .replace(/{collection-id}/gi, collection_id || mlab.collection),
+            {
+                params: query_options,
+                body: doc_body,
+                performPut: true
+            }
+        );
     };
     
     return mlab;
