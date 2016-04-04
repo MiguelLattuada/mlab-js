@@ -158,7 +158,7 @@ var mLab_client = function(mlab) {
         );
     };
     
-    // POST: insert document into collection
+    // POST: insert document/s into collection
     mlab.insert_document = function(doc_body, db_id, collection_id) {
         return request.post(
             mlab.base_url.concat(mlab.documents_path, '?')
@@ -171,6 +171,23 @@ var mLab_client = function(mlab) {
                 body: doc_body
             }
         );
+    };
+    
+    // POST: update document/s that match query
+    mlab.update_document = function(query_options, doc_body, db_id, collection_id) {
+        query_options.apiKey = mlab.api_key;
+        
+        return request.post(
+            mlab.base_url.concat(mlab.documents_path, '?')
+                .replace(/{database-id}/gi, db_id || mlab.db)
+                .replace(/{collection-id}/gi, collection_id || mlab.collection),
+            {
+                params: query_options,
+                body: {
+                    $set: doc_body
+                }
+            }
+        )  
     };
     
     return mlab;

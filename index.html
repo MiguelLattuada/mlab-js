@@ -16,7 +16,7 @@
             
             client.use({
                 db: 'evs',
-                collection: 'testcol'
+                collection: 'testing'
             });
             
             // client.list_collections().then(function(result) {
@@ -25,11 +25,11 @@
             //     console.log(error);
             // });
             
-            client.list_documents().then(function(result) {
-                console.log(result);
-            }, function(error) {
-                console.log(error);
-            });
+            // client.list_documents().then(function(result) {
+            //     console.log(result);
+            // }, function(error) {
+            //     console.log(error);
+            // });
             
             // client.query_documents('evs', 'testcol', {
             //     q: {
@@ -52,6 +52,22 @@
             // client.insert_document('evs', 'testing', prsn).then(function(r){
             //     console.log(r);
             // });
+            
+            client.update_document(
+                // Query document
+                {
+                    q: {
+                        _id: '5701b2e0e4b04e1f699a103f'
+                    }
+                },
+                // Document new properties
+                {
+                    name: 'Miguel Lattuada',
+                    age: 23
+                }
+            ).then(function(r){
+                console.log(r);
+            })
         </script>
     </body>
 </html>
