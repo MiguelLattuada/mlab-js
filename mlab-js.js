@@ -81,18 +81,11 @@ var mLab_client = function(mlab) {
     
     // Set db, and collection to work with
     mlab.use = function(properties) {
+        mlab.config = mlab.config || {};
         mlab.config.db = properties.db || mlab.config.db;
         mlab.config.collection = properties.collection || mlab.config.collection;
         mlab.config.cluster = properties.cluster || mlab.config.cluster;
     };
-    
-    // Init submodules
-    mlab.database = mlab.cluster = mlab.collection = mlab.document = {};
-    
-    // Cluster submodule
-    (function(cluster) {
-        
-    })(mlab.cluster)
     
     // Database submodule
     (function(database) {
@@ -120,7 +113,7 @@ var mLab_client = function(mlab) {
             );
         };
         
-    })(mlab.database);
+    })(mlab.database || (mlab.database = {}));
     
     // Collection submodule
     (function(collection) {
@@ -128,7 +121,7 @@ var mLab_client = function(mlab) {
         // GET: List of collections for a given database
         collection.list = function(db_id) {
             return request.get(
-                mlab.base_url.concat(mlab.config.collection_path, '?')
+                mlab.base_url.concat(mlab.collection_path, '?')
                     .replace(/{database-id}/gi, db_id || mlab.config.db),
                 {
                     apiKey: mlab.api_key
@@ -154,7 +147,7 @@ var mLab_client = function(mlab) {
         };
         
         
-    })(mlab.collection);
+    })(mlab.collection || (mlab.collection = {}));
     
     // Documents submodule
     (function(document) {
@@ -233,7 +226,7 @@ var mLab_client = function(mlab) {
             );
         };
     
-    })(mlab.document);
+    })(mlab.document || (mlab.document = {}));
     
     return mlab;
 };
