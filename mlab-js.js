@@ -53,8 +53,9 @@ var mLab_client = function(mlab) {
             var xhr = new XMLHttpRequest();
             
             if (options.params) url = url.concat(request.formatParameters(options.params));
+            if (options.performPut) type = 'PUT';
             
-            xhr.open('POST', url, true);
+            xhr.open(type || 'POST', url, true);
             xhr.setRequestHeader('Content-Type', 'application/json');
             xhr.send(JSON.stringify(options.body));
             
@@ -80,98 +81,152 @@ var mLab_client = function(mlab) {
     
     // Set db, and collection to work with
     mlab.use = function(properties) {
-        mlab.db = properties.db || mlab.db;
-        mlab.collection = properties.collection || mlab.collection;
-        mlab.cluster = properties.cluster || mlab.cluster;
+        mlab.config = mlab.config || {};
+        mlab.config.db = properties.db || mlab.config.db;
+        mlab.config.collection = properties.collection || mlab.config.collection;
+        mlab.config.cluster = properties.cluster || mlab.config.cluster;
     };
     
-    // GET: List all databases
-    mlab.list_databases = function() {
-        return request.get(
-            mlab.base_url.concat(mlab.database_path, '?'),
-            {
-                apiKey: mlab.api_key
-            }
-        );
-    };
-    
-    // GET: list all databases by cluster id
-    mlab.list_databases_by_cluster = function(cluster_id) {
-        return request.get(
-            mlab.base_url.concat(mlab.cluster_path, '?')
-                .replace(/{cluster-id}/gi, cluster_id || mlab.cluster),
-            {
-                apiKey: mlab.api_key
-            }
-        )  
-    };
-    
-    // GET: List of collections for a given database
-    mlab.list_collections = function(db_id) {
-        return request.get(
-            mlab.base_url.concat(mlab.collection_path, '?')
-                .replace(/{database-id}/gi, db_id || mlab.db),
-            {
-                apiKey: mlab.api_key
-            }
-        );
-    };
-    
-    // GET: list of documents for a given db and collection
-    mlab.list_documents = function(db_id, collection_id) {
-        return request.get(
-            mlab.base_url.concat(mlab.documents_path, '?')
-                .replace(/{database-id}/gi, db_id || mlab.db)
-                .replace(/{collection-id}/gi, collection_id || mlab.collection),
-            {
-                apiKey: mlab.api_key
-            }
-        );
-    };
-    
-    // GET: list documents for a given query
-    mlab.query_documents = function(query_options, db_id, collection_id) {
-        query_options.apiKey = mlab.api_key;
+    // Database submodule
+    (function(database) {
         
-        return request.get(
-            mlab.base_url.concat(mlab.documents_path, '?')
-                .replace(/{database-id}/gi, db_id || mlab.db)
-                .replace(/{collection-id}/gi, collection_id || mlab.collection),
-            query_options
-        );
-    };
-    
-    // POST: create collection, this is just a convention
-    mlab.create_collection = function(db_id, collection_id) {
-        return request.post(
-            mlab.base_url.concat(mlab.documents_path, '?')
-                .replace(/{database-id}/gi, db_id || mlab.db)
-                .replace(/{collection-id}/gi, collection_id || mlab.collection),
-            {
-                params: {
+        // GET (Private): list all databases by cluster id
+        var getDbsFromCluster = function(cluster_id) {
+            return request.get(
+                mlab.base_url.concat(mlab.config.cluster_path, '?')
+                    .replace(/{cluster-id}/gi, cluster_id || mlab.config.cluster),
+                {
                     apiKey: mlab.api_key
-                },
-                body: {
-                    x: 1
                 }
-            }
-        );
-    };
-    
-    // POST: insert document into collection
-    mlab.insert_document = function(doc_body, db_id, collection_id) {
-        return request.post(
-            mlab.base_url.concat(mlab.documents_path, '?')
-                .replace(/{database-id}/gi, db_id || mlab.db)
-                .replace(/{collection-id}/gi, collection_id || mlab.collection),
-            {
-                params: {
+            );
+        };
+        
+        // GET: list all databases from default cluster or given cluster
+        database.list = function(cluster_id) {
+            if (cluster_id) return getDbsFromCluster(cluster_id);
+            
+            return request.get(
+                mlab.base_url.concat(mlab.database_path, '?'),
+                {
                     apiKey: mlab.api_key
-                },
-                body: doc_body
-            }
-        );
-    };
+                }
+            );
+        };
+        
+    })(mlab.database || (mlab.database = {}));
+    
+    // Collection submodule
+    (function(collection) {
+        
+        // GET: List of collections for a given database
+        collection.list = function(db_id) {
+            return request.get(
+                mlab.base_url.concat(mlab.collection_path, '?')
+                    .replace(/{database-id}/gi, db_id || mlab.config.db),
+                {
+                    apiKey: mlab.api_key
+                }
+            );
+        };
+        
+        // POST: create collection, this is just a convention
+        collection.create = function(db_id, collection_id) {
+            return request.post(
+                mlab.base_url.concat(mlab.documents_path, '?')
+                    .replace(/{database-id}/gi, db_id || mlab.config.db)
+                    .replace(/{collection-id}/gi, collection_id || mlab.config.collection),
+                {
+                    params: {
+                        apiKey: mlab.api_key
+                    },
+                    body: {
+                        x: 1
+                    }
+                }
+            );
+        };
+        
+        
+    })(mlab.collection || (mlab.collection = {}));
+    
+    // Documents submodule
+    (function(document) {
+        
+        // GET: list of documents for a given db and collection
+        document.list = function(db_id, collection_id) {
+            return request.get(
+                mlab.base_url.concat(mlab.documents_path, '?')
+                    .replace(/{database-id}/gi, db_id || mlab.config.db)
+                    .replace(/{collection-id}/gi, collection_id || mlab.config.collection),
+                {
+                    apiKey: mlab.api_key
+                }
+            );
+        };
+        
+        // GET: list documents for a given query
+        document.query = function(query_options, db_id, collection_id) {
+            query_options.apiKey = mlab.api_key;
+            
+            return request.get(
+                mlab.base_url.concat(mlab.documents_path, '?')
+                    .replace(/{database-id}/gi, db_id || mlab.config.db)
+                    .replace(/{collection-id}/gi, collection_id || mlab.config.collection),
+                query_options
+            );
+        };
+        
+        // POST: insert document/s into collection
+        document.create = function(doc_body, db_id, collection_id) {
+            return request.post(
+                mlab.base_url.concat(mlab.documents_path, '?')
+                    .replace(/{database-id}/gi, db_id || mlab.config.db)
+                    .replace(/{collection-id}/gi, collection_id || mlab.config.collection),
+                {
+                    params: {
+                        apiKey: mlab.api_key
+                    },
+                    body: doc_body
+                }
+            );
+        };
+        
+        // PUT: update document/s that match query
+        document.update = function(query_options, doc_body, db_id, collection_id) {
+            query_options.apiKey = mlab.api_key;
+            
+            return request.post(
+                mlab.base_url.concat(mlab.documents_path, '?')
+                    .replace(/{database-id}/gi, db_id || mlab.config.db)
+                    .replace(/{collection-id}/gi, collection_id || mlab.config.collection),
+                {
+                    params: query_options,
+                    body: {
+                        $set: doc_body
+                    },
+                    performPut: true
+                }
+            );  
+        };
+        
+        // PUT: replace document/s that match query
+        document.replace = function(query_options, doc_body, db_id, collection) {
+            query_options.apiKey = mlab.api_key;
+            if(!(doc_body instanceof Array)) return; //Check this!
+            
+            return request.post(
+                mlab.base_url.concat(mlab.documents_path, '?')
+                    .replace(/{database-id}/gi, db_id || mlab.config.db)
+                    .replace(/{collection-id}/gi, collection_id || mlab.config.collection),
+                {
+                    params: query_options,
+                    body: doc_body,
+                    performPut: true
+                }
+            );
+        };
+    
+    })(mlab.document || (mlab.document = {}));
     
     return mlab;
 };

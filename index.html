@@ -16,8 +16,24 @@
             
             client.use({
                 db: 'evs',
-                collection: 'testcol'
+                collection: 'testing'
             });
+            
+            // console.log(client);
+            
+            // client.collection.list().then(function(r) {
+            //     console.log(r);
+            // });
+            // client.document.list().then(function(r){ console.log(r); });
+            client.document.query(
+                { 
+                    q: {
+                         name: 'Miguel Lattuada'
+                    },
+                    f: {
+                        name: 1
+                    } 
+                }).then(function(r){ console.log(r); });
             
             // client.list_collections().then(function(result) {
             //     console.log(result);
@@ -25,11 +41,11 @@
             //     console.log(error);
             // });
             
-            client.list_documents().then(function(result) {
-                console.log(result);
-            }, function(error) {
-                console.log(error);
-            });
+            // client.list_documents().then(function(result) {
+            //     console.log(result);
+            // }, function(error) {
+            //     console.log(error);
+            // });
             
             // client.query_documents('evs', 'testcol', {
             //     q: {
@@ -52,6 +68,22 @@
             // client.insert_document('evs', 'testing', prsn).then(function(r){
             //     console.log(r);
             // });
+            
+            // client.update_document(
+            //     // Query document
+            //     {
+            //         q: {
+            //             name: 'Mike'
+            //         }
+            //     },
+            //     // Document new properties
+            //     {
+            //         name: 'Miguel Lattuada',
+            //         age: 23
+            //     }
+            // ).then(function(r){
+            //     console.log(r);
+            // })
         </script>
     </body>
 </html>
