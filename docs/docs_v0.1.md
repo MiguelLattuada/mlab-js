@@ -47,7 +47,7 @@ _Object_, database submodule, provides methods to work with mLab database REST A
 __Methods:__ 
 
 name | parameters | description | return
---- | --- | ---
+--- | --- | --- | ---
 list | `[Cluster ID]{String}` | list all databases from default cluster or given cluster | `{Promise}`
 
 __Usage:__
