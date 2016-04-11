@@ -1,5 +1,9 @@
 ##Documentation
 
+###Table of contents
+- [Create mLab_client instance](#mlab_clientobject)
+- [Use database submodule](#new-mlab_clientobjectdatabase)
+
 ###mLab\_client({Object})
 _Constructor function_, creates a new instance of mLab_client that returns an object with all accessible methods.
 
