@@ -1,7 +1,7 @@
 ##Documentation
 
 ###mLab\_client({Object})
-_Constructor function_, creates a new instance of mLab_client that returns an object with all accesible methods.
+_Constructor function_, creates a new instance of mLab_client that returns an object with all accessible methods.
 
 __Parameters:__
 
@@ -23,13 +23,14 @@ document | `[Optional]{Object}` | object with extra data/functionality for docum
 
 __Returns: {Object}__
 
-Every property added to the _parameters_ object, is returned, as well as new members are added to `parameters.database`, `parameters.collection`, `parameters.document`.
+Every property added to the _parameters_ object, is returned, as well as new members are added to `parameters.database`, `parameters.collection`, `parameters.document`. Added method _use_.
 
-name | type | description
---- | --- | ---
-use | `{Function}({Object})` | set or change your current config object. `{ db: 'evs', collection: 'testing' }`  
+name | type | parameters | description
+--- | --- | --- | ---
+use | `{Function}`| `[Config]{Object}` | set or change your current config object. `{ db: 'evs', collection: 'testing' }`  
 
 __Usage__:
+
 ```javascript
 var client = new mLab_client({ api_key: 'YOUR_API_KEY' });
 
@@ -37,5 +38,26 @@ var client = new mLab_client({ api_key: 'YOUR_API_KEY' });
 client.use({
     db: 'my_db',
     collection: 'my_collection'
+});
+```
+
+###new mLab_client({object}).database
+_Object_, database submodule, provides methods to work with mLab database REST API endpoint.
+
+__Methods:__ 
+
+name | parameters | description | return
+--- | --- | ---
+list | `[Cluster ID]{String}` | list all databases from default cluster or given cluster | `{Promise}`
+
+__Usage:__
+
+```javascript
+var client = new mLab_client({ api_key: 'YOUR_API_KEY' });
+
+//List all databases at default cluster
+client.database.list().then(function(result){
+    //[result]{Array}
+    console.log(result);
 });
 ```
