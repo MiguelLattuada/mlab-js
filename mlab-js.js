@@ -130,11 +130,11 @@ var mLab_client = function(mlab) {
         };
         
         // POST: create collection, this is just a convention
-        collection.create = function(db_id, collection_id) {
+        collection.create = function(collection_id, db_id) {
             return request.post(
                 mlab.base_url.concat(mlab.documents_path, '?')
                     .replace(/{database-id}/gi, db_id || mlab.config.db)
-                    .replace(/{collection-id}/gi, collection_id || mlab.config.collection),
+                    .replace(/{collection-id}/gi, collection_id),
                 {
                     params: {
                         apiKey: mlab.api_key
