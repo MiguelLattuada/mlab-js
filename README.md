@@ -2,6 +2,6 @@
 ##What's mLab-js?
 mLab-js is small javascript library that helps you interact with the https://mlab.com REST API in a simple way.
 ##Why should I use it?
-It makes easier to test your front end application against db data, without server intervention.
+It makes easier to test your front end application against db data, without server intervention, and of course it's fully customizable. You can override most properties so if a url path is not up to date you can use it anyways, overriding it with the new one.
 ##Docs
-Next commit.
+Working at, /docs

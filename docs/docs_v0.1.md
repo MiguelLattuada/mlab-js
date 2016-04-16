@@ -3,6 +3,7 @@
 ###Table of contents
 - [Create mLab_client instance](#mlab_clientobject)
 - [Use database submodule](#new-mlab_clientobjectdatabase)
+- [Use collection submodule](#new-mlab_clientobjectcollection)
 
 ###mLab\_client({Object})
 _Constructor function_, creates a new instance of mLab_client that returns an object with all accessible methods.
@@ -52,7 +53,7 @@ __Methods:__
 
 name | parameters | description | return
 --- | --- | --- | ---
-list | `[Cluster ID]{String}` | list all databases from default cluster or given cluster | `{Promise}`
+list | `[Cluster ID, Optional]{String}` | list all databases from default cluster or given cluster | `{Promise}`
 
 __Usage:__
 
@@ -63,5 +64,36 @@ var client = new mLab_client({ api_key: 'YOUR_API_KEY' });
 client.database.list().then(function(result){
     //[result]{Array}
     console.log(result);
+});
+```
+
+##new mLab_client({object}).collection
+_Object_, collection submodule, provides methods to work with mLab collection REST API endpoint.
+
+__Methods:__
+
+name | parameters | description | return
+--- | --- | --- | ---
+list | `[Database ID, Optional]{String}` | list collections from default dabatase or given database. If no parameter is passed `config.db` must be defined | `{Promise}`
+create | `[Collection ID]{String}, [Database ID, Optional]{String}` | create a new collection with the given id at the given database or default database. If no parameter is passed for database id, `config.db` must be defined | `{Promise}`
+
+__Usage:__
+
+```javascript
+var client = new mLab_client({ api_key: 'YOUR_API_KEY' });
+
+//Use 'my_new_db', as default database for every operation
+client.use({
+    db: 'my_new_db'
+});
+
+//List collections at: my_new_db
+client.collection.list().then(function(result){
+    //[result]{Array}
+    console.log(result);
+});
+
+//Create a collection at: my_new_db
+client.collection.create('nCollection').then(function(result){
 });
 ```
