@@ -25,15 +25,19 @@
             //     console.log(r);
             // });
             // client.document.list().then(function(r){ console.log(r); });
-            client.document.query(
-                { 
-                    q: {
-                         name: 'Miguel Lattuada'
-                    },
-                    f: {
-                        name: 1
-                    } 
-                }).then(function(r){ console.log(r); });
+            // client.document.query(
+            //     { 
+            //         q: {
+            //              name: 'Miguel Lattuada'
+            //         },
+            //         f: {
+            //             name: 1
+            //         } 
+            //     }).then(function(r){ console.log(r); });
+            
+            client.document.get('5701b2e0e4b04e1f699a103f').then(function(r) {
+                console.log(r)
+            });
             
             // client.list_collections().then(function(result) {
             //     console.log(result);

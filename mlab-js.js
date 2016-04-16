@@ -130,11 +130,11 @@ var mLab_client = function(mlab) {
         };
         
         // POST: create collection, this is just a convention
-        collection.create = function(db_id, collection_id) {
+        collection.create = function(collection_id, db_id) {
             return request.post(
                 mlab.base_url.concat(mlab.documents_path, '?')
                     .replace(/{database-id}/gi, db_id || mlab.config.db)
-                    .replace(/{collection-id}/gi, collection_id || mlab.config.collection),
+                    .replace(/{collection-id}/gi, collection_id),
                 {
                     params: {
                         apiKey: mlab.api_key
@@ -153,7 +153,7 @@ var mLab_client = function(mlab) {
     (function(document) {
         
         // GET: list of documents for a given db and collection
-        document.list = function(db_id, collection_id) {
+        document.list = function(collection_id, db_id) {
             return request.get(
                 mlab.base_url.concat(mlab.documents_path, '?')
                     .replace(/{database-id}/gi, db_id || mlab.config.db)
@@ -165,7 +165,7 @@ var mLab_client = function(mlab) {
         };
         
         // GET: list documents for a given query
-        document.query = function(query_options, db_id, collection_id) {
+        document.query = function(query_options, collection_id, db_id) {
             query_options.apiKey = mlab.api_key;
             
             return request.get(
@@ -177,7 +177,7 @@ var mLab_client = function(mlab) {
         };
         
         // POST: insert document/s into collection
-        document.create = function(doc_body, db_id, collection_id) {
+        document.create = function(doc_body, collection_id, db_id) {
             return request.post(
                 mlab.base_url.concat(mlab.documents_path, '?')
                     .replace(/{database-id}/gi, db_id || mlab.config.db)
@@ -192,7 +192,7 @@ var mLab_client = function(mlab) {
         };
         
         // PUT: update document/s that match query
-        document.update = function(query_options, doc_body, db_id, collection_id) {
+        document.update = function(query_options, doc_body, collection_id, db_id) {
             query_options.apiKey = mlab.api_key;
             
             return request.post(
@@ -210,7 +210,7 @@ var mLab_client = function(mlab) {
         };
         
         // PUT: replace document/s that match query
-        document.replace = function(query_options, doc_body, db_id, collection) {
+        document.replace = function(query_options, doc_body, collection, db_id) {
             query_options.apiKey = mlab.api_key;
             if(!(doc_body instanceof Array)) return; //Check this!
             
@@ -222,6 +222,18 @@ var mLab_client = function(mlab) {
                     params: query_options,
                     body: doc_body,
                     performPut: true
+                }
+            );
+        };
+        
+        // GET: list one document by id 
+        document.get = function(id, collection_id, db_id) {
+            return request.get(
+                mlab.base_url.concat(mlab.documents_path, '/', id, '?')
+                    .replace(/{database-id}/gi, db_id || mlab.config.db)
+                    .replace(/{collection-id}/gi, collection_id || mlab.config.collection),
+                {
+                    apiKey: mlab.api_key
                 }
             );
         };
